@@ -111,6 +111,20 @@
                 transform: rotate(360deg) translateX(200px) rotate(-360deg);
             }
         }
+        .bottom-text {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1.2rem;
+            font-family: 'Arial', sans-serif;
+            z-index: 10;
+            transition: color 0.3s ease;
+        }
+        .bottom-text:hover {
+            color: #60a5fa;
+        }
     </style>
 </head>
 <body class="bg-black">
@@ -133,6 +147,7 @@
     <div class="orbit-container">
         <img class="orbit-gif" src="https://i.imgur.com/tDqPTPw.gif" alt="Orbiting GIF">
     </div>
+    <div class="bottom-text">Ca: (soon)</div>
     <script>
         // Function to close the popup
         function closePopup() {
