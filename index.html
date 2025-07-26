@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Explorer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+        .site-name { position: absolute; top: 20px; left: 20px; z-index: 10; }
+        .site-name span {
+            color: white;
+            font-size: 1.5rem;
+            font-family: 'Arial', sans-serif;
+            transition: color 0.3s ease;
+        }
+        .site-name span:hover {
+            color: #60a5fa;
+        }
+        .social-links { position: absolute; top: 20px; right: 20px; z-index: 10; }
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            transition: transform 0.3s ease, color 0.3s ease;
+            animation: float 3s ease-in-out infinite;
+        }
+        .social-links a:hover {
+            transform: scale(1.2) translateY(-5px);
+            color: #60a5fa;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            transition: opacity 0.5s ease;
+        }
+        .popup-content {
+            background: #1a202c;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+        }
+        .popup-content h1 {
+            color: white;
+            font-size: 2rem;
+            font-family: 'Arial', sans-serif;
+            margin-bottom: 1.5rem;
+        }
+        .popup-content button {
+            background: #60a5fa;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.25rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .popup-content button:hover {
+            background: #3b82f6;
+            transform: scale(1.05);
+        }
+        .hidden { display: none; }
+        .gif-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+        .gif-container img {
+            width: 300px;
+            height: auto;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
+        }
+        .orbit-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 400px; /* Orbit diameter */
+            height: 400px;
+            transform: translate(-50%, -50%);
+            z-index: 4;
+        }
+        .orbit-gif {
+            position: absolute;
+            width: 80px; /* Smaller size for orbiting GIF */
+            height: auto;
+            animation: orbit 10s linear infinite;
+        }
+        @keyframes orbit {
+            0% {
+                transform: rotate(0deg) translateX(200px) rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg) translateX(200px) rotate(-360deg);
+            }
+        }
+    </style>
+</head>
+<body class="bg-black">
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h1>Welcome to Marsk</h1>
+            <button onclick="closePopup()">Explore</button>
+        </div>
+    </div>
+    <div class="site-name">
+        <span class="font-bold">Marsk</span>
+    </div>
+    <div class="social-links text-white text-lg font-futuristic">
+        <a href="https://x.com/i/communities/1949210279113560286" target="_blank" class="hover:text-blue-400">X</a>
+        <a href="https://telegram.org" target="_blank" class="hover:text-blue-400">Telegram</a>
+    </div>
+    <div class="gif-container">
+        <img src="https://i.imgur.com/uF8Zis2.gif" alt="Centered GIF">
+    </div>
+    <div class="orbit-container">
+        <img class="orbit-gif" src="https://i.imgur.com/tDqPTPw.gif" alt="Orbiting GIF">
+    </div>
+    <script>
+        // Function to close the popup
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            popup.style.opacity = '0';
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 500); // Match transition duration
+        }
+
+        // Initialize Three.js scene (for starry background only)
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Particle system for stars
+        const particleGeometry = new THREE.BufferGeometry();
+        const particleCount = 5000;
+        const posArray = new Float32Array(particleCount * 3);
+        for (let i = 0; i < particleCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 200;
+        }
+        particleGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particleMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 });
+        const particles = new THREE.Points(particleGeometry, particleMaterial);
+        scene.add(particles);
+
+        camera.position.z = 3;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            particles.rotation.y += 0.001;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
