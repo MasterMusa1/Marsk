@@ -125,6 +125,25 @@
         .bottom-text:hover {
             color: #60a5fa;
         }
+        .rocket-container {
+            position: absolute;
+            left: 20%;
+            z-index: 6;
+            animation: rocket-fly 5s linear infinite;
+        }
+        .rocket-container img {
+            width: 60px;
+            height: auto;
+            transform: rotate(0deg); /* Rotate to face upward */
+        }
+        @keyframes rocket-fly {
+            0% {
+                bottom: -100px; /* Start below the viewport */
+            }
+            100% {
+                bottom: 100%; /* Move to top of viewport */
+            }
+        }
     </style>
 </head>
 <body class="bg-black">
@@ -142,12 +161,15 @@
         <a href="https://telegram.org" target="_blank" class="hover:text-blue-400">Telegram</a>
     </div>
     <div class="gif-container">
-        <img src="https://i.imgur.com/uF8Zis2.gif" alt="Centered GIF">
+        <img src="https://i.imgur.com/6nFKWGS.gif" alt="Centered GIF">
     </div>
     <div class="orbit-container">
         <img class="orbit-gif" src="https://i.imgur.com/tDqPTPw.gif" alt="Orbiting GIF">
     </div>
     <div class="bottom-text">Ca: (soon)</div>
+    <div class="rocket-container">
+        <img src="https://i.imgur.com/s6fRsQ8.gif" alt="Rocket GIF">
+    </div>
     <script>
         // Function to close the popup
         function closePopup() {
